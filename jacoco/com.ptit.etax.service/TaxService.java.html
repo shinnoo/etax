@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaxService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">etax</a> &gt; <a href="index.source.html" class="el_package">com.ptit.etax.service</a> &gt; <span class="el_source">TaxService.java</span></div><h1>TaxService.java</h1><pre class="source lang-java linenums">package com.ptit.etax.service;
+
+import com.ptit.etax.common.error.ConflictException;
+import com.ptit.etax.common.error.NotFoundException;
+import com.ptit.etax.controller.request.TaxRequest;
+import com.ptit.etax.model.Tax;
+import com.ptit.etax.model.mapper.GenericMapper;
+import com.ptit.etax.repository.TaxRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="fc" id="L13">public class TaxService {</span>
+
+    @Autowired
+    TaxRepository taxRepository;
+
+    @Autowired
+    GenericMapper genericMapper;
+
+    public Tax create(TaxRequest.TaxCreate request) {
+        // kiểm tra xem thông tin về mst đã được khai báo hay chưa
+<span class="fc" id="L23">        Tax tax = taxRepository.findById(request.getId()).orElse(null);</span>
+        //nếu có thì show lỗi
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (tax != null){</span>
+<span class="fc" id="L26">            throw new ConflictException(&quot;Thông tin mã số thuế đã được đăng ký&quot;);</span>
+        }
+
+
+        // nếu không thì cho tạo
+<span class="fc" id="L31">        tax = genericMapper.mapToType(request,Tax.class);</span>
+<span class="fc" id="L32">        return taxRepository.save(tax);</span>
+    }
+
+    public Tax getById(String userId) {
+<span class="fc" id="L36">        Tax tax = taxRepository.findById(userId).orElse(null);</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (tax == null){</span>
+<span class="fc" id="L38">            throw new NotFoundException(&quot;Không tìm thấy thông tin mã số thuế này&quot;);</span>
+        }
+<span class="fc" id="L40">        return tax;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

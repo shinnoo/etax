@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PayService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">etax</a> &gt; <a href="index.source.html" class="el_package">com.ptit.etax.service</a> &gt; <span class="el_source">PayService.java</span></div><h1>PayService.java</h1><pre class="source lang-java linenums">package com.ptit.etax.service;
+
+import com.ptit.etax.common.constant.StatusConstant;
+import com.ptit.etax.common.error.BadRequestException;
+import com.ptit.etax.common.error.NotFoundException;
+import com.ptit.etax.common.util.CalculateUtil;
+import com.ptit.etax.controller.request.PayRequest;
+import com.ptit.etax.model.Tax;
+import com.ptit.etax.model.mapper.GenericMapper;
+import com.ptit.etax.repository.PayRepository;
+import com.ptit.etax.repository.TaxRepository;
+import com.ptit.etax.model.Pay;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
+
+@Service
+<span class="fc" id="L22">public class PayService {</span>
+    @Autowired
+    TaxRepository taxRepository;
+
+    @Autowired
+    PayRepository payRepository;
+
+    @Autowired
+    GenericMapper genericMapper;
+
+    public Pay create(PayRequest.PayCreate request) {
+
+        // Check xem đã khai báo thông tin thuế chưa
+<span class="fc" id="L35">        Tax tax =  taxRepository.findById(request.getTaxId()).orElse(null);</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (tax == null) {</span>
+<span class="fc" id="L37">            throw new NotFoundException(&quot;Thông tin thuế chưa được khai báo&quot;);</span>
+        }
+
+        // Tìm danh sách các khoản thuế xem có bị trùng thời gian đóng thuế hay không
+<span class="fc" id="L41">        Pay pay = genericMapper.mapIgnoreNull(request,Pay.class);</span>
+<span class="fc" id="L42">        LocalDate calculateDate = pay.getCalculateDate().atZone(ZoneOffset.UTC).toLocalDate();</span>
+<span class="fc" id="L43">        LocalDate firstDayOfMonth = calculateDate.withDayOfMonth(1);</span>
+<span class="fc" id="L44">        LocalDate endDayOfMonth = calculateDate.withDayOfMonth(calculateDate.lengthOfMonth());</span>
+<span class="fc" id="L45">        LocalDateTime atFirstDay = firstDayOfMonth.atTime(0,0,0);</span>
+<span class="fc" id="L46">        LocalDateTime atEndDay = endDayOfMonth.atTime(23,59,59);</span>
+<span class="fc" id="L47">        boolean isOverlap = payRepository.existsByTaxIdAndCalculateDateBetween(tax.getId(),atFirstDay.atZone(ZoneOffset.UTC).toInstant(),atEndDay.atZone(ZoneOffset.UTC).toInstant());</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        if (isOverlap){</span>
+<span class="nc" id="L49">            throw new BadRequestException(&quot;Đã khai báo thuế trong thời gian này&quot;);</span>
+        }
+
+        // business logic
+<span class="fc" id="L53">        pay.setPrice(CalculateUtil.calculate(request.getIncome()));</span>
+<span class="fc" id="L54">        pay.setStatus(StatusConstant.CREATED);</span>
+<span class="fc" id="L55">        pay.setPayment(0l);</span>
+<span class="fc" id="L56">        return payRepository.save(pay);</span>
+    }
+
+
+    public Pay update(String id, PayRequest.PayUpdate request) {
+<span class="fc" id="L61">        Pay pay = payRepository.findById(id).orElse(null);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (pay == null){</span>
+<span class="fc" id="L63">            throw new NotFoundException(&quot;Không tìm thấy lần khai báo này&quot;);</span>
+        }
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (StatusConstant.COMPLETE.equals(pay.getStatus())){</span>
+<span class="fc" id="L66">            throw new BadRequestException(&quot;Lần khai báo này đã được đóng đủ tiền&quot;);</span>
+        }
+<span class="fc" id="L68">        pay.setPayment(pay.getPayment() + request.getPaymentAmount());</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (Float.compare(pay.getPayment(),pay.getPrice()) == 0 ) {</span>
+<span class="fc" id="L70">            pay.setStatus(StatusConstant.COMPLETE);</span>
+        } else {
+<span class="fc" id="L72">            pay.setStatus(StatusConstant.INCOMPLETE);</span>
+        }
+<span class="fc" id="L74">        return payRepository.save(pay);</span>
+    }
+
+    public List&lt;Pay&gt; getAll(String taxId) {
+<span class="fc" id="L78">        return payRepository.findAllByTaxId(taxId);</span>
+    }
+
+    public Long calculate(Long income) {
+<span class="fc" id="L82">        return CalculateUtil.calculate(income);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">etax</a> &gt; <a href="index.source.html" class="el_package">com.ptit.etax.controller.api</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package com.ptit.etax.controller.api;
+
+import com.ptit.etax.common.enums.ResponseCodeEnum;
+import com.ptit.etax.model.mapper.GenericMapper;
+import com.ptit.etax.controller.request.UserRequest;
+import com.ptit.etax.controller.response.ResponseBodyDTO;
+import com.ptit.etax.model.User;
+import com.ptit.etax.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping(&quot;/api/v1&quot;)
+<span class="fc" id="L21">public class UserController {</span>
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    GenericMapper genericMapper;
+
+    @PostMapping(value = &quot;/users&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;ResponseBodyDTO&lt;User&gt;&gt; create(@RequestBody @Valid UserRequest.UserCreate request) {
+<span class="nc" id="L30">        ResponseBodyDTO&lt;User&gt; response = new ResponseBodyDTO&lt;&gt;();</span>
+<span class="nc" id="L31">        User user = userService.create(request);</span>
+<span class="nc" id="L32">        response.setItem(user).setCode(ResponseCodeEnum.R_201).setMessage(&quot;Đã đăng ký thành công mã số thuế &quot; + user.getId());</span>
+<span class="nc" id="L33">        return new ResponseEntity&lt;&gt;(response, HttpStatus.CREATED);</span>
+    }
+
+    @PostMapping(value = &quot;/login&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;ResponseBodyDTO&lt;User&gt;&gt; login(@RequestBody @Valid UserRequest.UserLogin request) {
+<span class="fc" id="L38">        ResponseBodyDTO&lt;User&gt; response = new ResponseBodyDTO&lt;&gt;();</span>
+<span class="fc" id="L39">        User user = userService.login(request);</span>
+<span class="fc" id="L40">        response.setItem(user).setCode(ResponseCodeEnum.R_200).setMessage(&quot;OK&quot;);</span>
+<span class="fc" id="L41">        return new ResponseEntity&lt;&gt;(response, HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

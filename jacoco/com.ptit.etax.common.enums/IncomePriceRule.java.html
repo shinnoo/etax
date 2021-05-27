@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IncomePriceRule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">etax</a> &gt; <a href="index.source.html" class="el_package">com.ptit.etax.common.enums</a> &gt; <span class="el_source">IncomePriceRule.java</span></div><h1>IncomePriceRule.java</h1><pre class="source lang-java linenums">package com.ptit.etax.common.enums;
+
+<span class="fc" id="L3">public enum IncomePriceRule {</span>
+<span class="fc" id="L4">	FIRST(1, 0l, 5000000l, 0.05f),</span>
+<span class="fc" id="L5">	SECOND(2, 5000001l, 10000000l, 0.1f),</span>
+<span class="fc" id="L6">	THIRD(3, 10000001l, 18000000l, 0.15f),</span>
+<span class="fc" id="L7">	FOURTH(4, 18000001l, 32000000l, 0.2f),</span>
+<span class="fc" id="L8">	FIFTH(5, 32000001l, 52000000l, 0.25f),</span>
+<span class="fc" id="L9">	SIXTH(6, 52000001l, 80000000l, 0.3f),</span>
+<span class="fc" id="L10">	SEVENTH(7, 80000001l, Long.MAX_VALUE, 0.35f) // max = 9,223,372,036,854,775,807</span>
+	;
+
+
+	int id;
+	Long incomeFrom;
+	Long incomeTo;
+	float unitPrice;
+
+<span class="fc" id="L19">	IncomePriceRule(int id, Long incomeFrom, Long incomeTo, float unitPrice) {</span>
+<span class="fc" id="L20">		this.id = id;</span>
+<span class="fc" id="L21">		this.incomeFrom = incomeFrom;</span>
+<span class="fc" id="L22">		this.incomeTo = incomeTo;</span>
+<span class="fc" id="L23">		this.unitPrice = unitPrice;</span>
+<span class="fc" id="L24">	}</span>
+
+	public Long priceOf(Long income) {
+<span class="fc bfc" id="L27" title="All 2 branches covered.">		if(income &lt; this.incomeFrom) {</span>
+<span class="fc" id="L28">			return 0l;</span>
+		}
+
+<span class="fc" id="L31">		return (long) ((Math.min(income, incomeTo) - incomeFrom + 1) * (unitPrice));</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

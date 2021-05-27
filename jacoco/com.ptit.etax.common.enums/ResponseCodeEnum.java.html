@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ResponseCodeEnum.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">etax</a> &gt; <a href="index.source.html" class="el_package">com.ptit.etax.common.enums</a> &gt; <span class="el_source">ResponseCodeEnum.java</span></div><h1>ResponseCodeEnum.java</h1><pre class="source lang-java linenums">package com.ptit.etax.common.enums;
+
+import com.ptit.etax.controller.response.ResponseCode;
+
+<span class="fc" id="L5">public enum ResponseCodeEnum implements ResponseCode {</span>
+    /*
+     * =========================================================================
+     * =======================================
+     * ===== E_xxx1 - CUSTOM ERROR =====
+     * =========================================================================
+     * =======================================
+     */
+<span class="fc" id="L13">    E_0001,</span>
+    /**
+     * {@code 200 OK}.
+     *
+     */
+<span class="fc" id="L18">    R_200,</span>
+
+    /*
+     * =========================================================================
+     * =======================================
+     * ===== 2xx - SUCCESS =====
+     * =========================================================================
+     * =======================================
+     */
+
+    /**
+     * {@code 201 Created}.
+     */
+<span class="fc" id="L31">    R_201,</span>
+    /**
+     * {@code 400 Bad Request}.
+     *
+     */
+<span class="fc" id="L36">    R_400,</span>
+
+    /**
+     * {@code 404 Not Found}.
+     *
+     */
+<span class="fc" id="L42">    R_404,</span>
+    /*
+     * =========================================================================
+     * =======================================
+     * ===== 5xx - SERVER ERROR =====
+     * =========================================================================
+     * =======================================
+     */
+    /**
+     * {@code 409 Conflict Error}.
+     */
+<span class="fc" id="L53">    R_409,</span>
+
+    /**
+     * {@code 500 Internal Server Error}.
+     */
+<span class="fc" id="L58">    R_500</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
