@@ -1,0 +1,26 @@
+image: adoptopenjdk/openjdk8:alpine-slim
+stages:
+  - test
+#  - build
+
+#maven-build:
+#  stage: build
+#  script: ./mvnw clean package -Dmaven.test.skip=true
+#  only:
+#    - master
+#  artifacts:
+#    paths:
+#      - target/*.jar
+
+maven-test:
+  only:
+    - master
+  stage: test
+  script: ./mvnw clean package
+  artifacts:
+    paths:
+      #- target/surefire-reports/TEST-*.xml
+      - target/site/jacoco/
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
